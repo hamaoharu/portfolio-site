@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | Frontend Engineer</title>
+  <meta name="description" content="Portfolio site of a Frontend Engineer. Built with Three.js, React, Next.js, and TypeScript.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#07090e',
+              dark: '#0c1017',
+              slate: '#161d2b',
+              cyan: '#00f0ff',
+              ice: '#38bdf8',
+              blue: '#3b82f6',
+              indigo: '#6366f1'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-brand-black text-slate-100 antialiased selection:bg-brand-cyan/25 selection:text-brand-cyan">
+
+  <!-- Background 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Subtle Film Grain / Noise Overlay -->
+  <div class="noise-overlay"></div>
+
+  <!-- Header / Navigation -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-5 px-6 lg:px-16">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="#" class="group flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-slate-900/90 border border-brand-cyan/40 flex items-center justify-center shadow-lg shadow-brand-cyan/10 group-hover:border-brand-cyan transition-colors">
+          <span class="font-mono font-bold text-brand-cyan text-base">PF</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold tracking-wider text-sm sm:text-base text-white group-hover:text-brand-cyan transition-colors">PORTFOLIO</span>
+          <span class="font-mono text-[10px] text-slate-400">FRONTEND ENGINEER</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="#about" class="text-slate-300 hover:text-brand-cyan transition-colors">About</a>
+        <a href="#experience" class="text-slate-300 hover:text-brand-cyan transition-colors">Experience</a>
+        <a href="#skills" class="text-slate-300 hover:text-brand-cyan transition-colors">Skills</a>
+        <a href="#works" class="text-slate-300 hover:text-brand-cyan transition-colors">Works</a>
+        <a href="#contact" class="cyber-button text-xs py-2 px-5">
+          <span>Contact</span>
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white" aria-label="Toggle Menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Modal -->
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-x-4 top-20 bg-slate-950/95 backdrop-blur-2xl border border-brand-cyan/30 rounded-2xl p-6 flex flex-col gap-5 shadow-2xl z-50">
+      <a href="#about" class="mobile-nav-link text-slate-200 text-base py-2 border-b border-slate-800 flex items-center justify-between">
+        <span>About</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-brand-cyan"></i>
+      </a>
+      <a href="#experience" class="mobile-nav-link text-slate-200 text-base py-2 border-b border-slate-800 flex items-center justify-between">
+        <span>Experience</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-brand-cyan"></i>
+      </a>
+      <a href="#skills" class="mobile-nav-link text-slate-200 text-base py-2 border-b border-slate-800 flex items-center justify-between">
+        <span>Skills</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-brand-cyan"></i>
+      </a>
+      <a href="#works" class="mobile-nav-link text-slate-200 text-base py-2 border-b border-slate-800 flex items-center justify-between">
+        <span>Works</span>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-brand-cyan"></i>
+      </a>
+      <a href="#contact" class="mobile-nav-link cyber-button w-full text-center mt-2 py-3">
+        <span>Contact</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Wrap -->
+  <main class="relative z-10">
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="min-h-screen flex items-center pt-28 pb-16 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+        <div class="lg:col-span-7 flex flex-col items-start">
+          
+          <!-- Status Pill -->
+          <div id="hero-badge" class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-brand-cyan/30 text-xs font-mono mb-6 backdrop-blur-md">
+            <span class="badge-pulse"></span>
+            <span class="text-slate-300">Frontend Engineer</span>
+            <span class="text-slate-600">/</span>
+            <span class="text-brand-cyan">Creative Developer</span>
+          </div>
+
+          <!-- Main Catchphrase -->
+          <h1 id="hero-title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] mb-6">
+            <span class="text-gradient">緻密な実装力と</span><br>
+            <span class="text-gradient-cyan">リッチな体験設計</span><br>
+            <span class="text-slate-200">を切り拓く。</span>
+          </h1>
+
+          <!-- Description -->
+          <p id="hero-desc" class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-xl mb-8">
+            確かなコーディング力とUI/UXへのこだわりをベースに、JavaScript / TypeScript、React、Next.js、Three.jsを用いたモダンで高品質なWebフロントエンド開発を追求しています。
+          </p>
+
+          <!-- Action Buttons -->
+          <div id="hero-cta" class="flex flex-wrap items-center gap-4 mb-12">
+            <a href="#works" class="cyber-button">
+              <span>制作実績を見る</span>
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </a>
+            <a href="#about" class="cyber-button-secondary">
+              <span>About Me</span>
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <!-- Highlight Key Metrics -->
+          <div id="hero-stats" class="grid grid-cols-3 gap-6 pt-6 border-t border-slate-800/80 w-full max-w-lg">
+            <div>
+              <div class="font-mono text-2xl font-bold text-white flex items-center">
+                React<span class="text-brand-cyan text-sm ml-0.5">/Next</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">モダンスタック</p>
+            </div>
+            <div>
+              <div class="font-mono text-2xl font-bold text-white flex items-center">
+                TS<span class="text-brand-cyan text-sm ml-0.5">/JS</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">型安全・高品質実装</p>
+            </div>
+            <div>
+              <div class="font-mono text-2xl font-bold text-white flex items-center">
+                3D<span class="text-brand-cyan text-sm ml-0.5">/WebGL</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">インタラクティブ表現</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3D Anchor placeholder for layout on desktop -->
+        <div class="lg:col-span-5 h-[340px] lg:h-[500px] flex items-center justify-center relative pointer-events-none">
+          <div class="absolute inset-0 flex items-center justify-center opacity-10">
+            <div class="w-72 h-72 rounded-full border border-dashed border-brand-cyan animate-[spin_30s_linear_infinite]"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="section-header max-w-2xl mb-16">
+        <div class="flex items-center gap-2 text-brand-cyan font-mono text-xs uppercase tracking-widest mb-3">
+          <span class="w-5 h-[1px] bg-brand-cyan"></span>
+          <span>About Identity</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          デザインと技術を架橋する、<br>
+          <span class="text-brand-cyan">フロントエンド開発</span>への情熱。
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          見た目の美しさとパフォーマンス、そして保守性の高いコード設計を大切にしています。最新のWeb標準とクリエイティブな表現技術を組み合わせ、心地よいユーザー体験を提供します。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-group">
+        
+        <!-- Card 1: 確かな実装力 -->
+        <div class="glass-panel p-8 tilt-card relative overflow-hidden reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          <div class="w-12 h-12 rounded-xl bg-cyan-950/40 border border-brand-cyan/30 flex items-center justify-center mb-6 text-brand-cyan group-hover:border-brand-cyan transition-colors">
+            <i data-lucide="check-circle" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">精密なコーディング・品質設計</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            デザインカンプのピクセルパーフェクトな再現、セマンティックなマークアップ、SEOやWebパフォーマンスの最適化を意識した丁寧な実装を徹底しています。
+          </p>
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-slate-800/80 font-mono text-[11px] text-brand-ice">
+            <span>#セマンティック</span>
+            <span>#パフォーマンス</span>
+            <span>#品質設計</span>
+          </div>
+        </div>
+
+        <!-- Card 2: モダンフロントエンドの探究 -->
+        <div class="glass-panel p-8 tilt-card relative overflow-hidden reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          <div class="w-12 h-12 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center justify-center mb-6 text-blue-400 group-hover:border-blue-400 transition-colors">
+            <i data-lucide="code-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">モダンWebアプリケーション</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            TypeScriptによる型安全な開発、ReactやNext.jsを活用したスケーラブルなコンポーネント設計や状態管理、高速なWebアプリケーション開発を推進しています。
+          </p>
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-slate-800/80 font-mono text-[11px] text-blue-400">
+            <span>#TypeScript</span>
+            <span>#React</span>
+            <span>#Next.js</span>
+            <span>#AppRouter</span>
+          </div>
+        </div>
+
+        <!-- Card 3: 3D & リッチインタラクション -->
+        <div class="glass-panel p-8 tilt-card relative overflow-hidden reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-center mb-6 text-indigo-400 group-hover:border-indigo-400 transition-colors">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">インタラクション & 3D表現</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            Three.jsやGSAPを用いた3Dオブジェクトや滑らかなマイクロインタラクションの実装。感情を動かすビジュアルと、快適なレスポンスを両立するUIを追求します。
+          </p>
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-slate-800/80 font-mono text-[11px] text-indigo-300">
+            <span>#Three.js</span>
+            <span>#WebGL</span>
+            <span>#GSAP</span>
+            <span>#Interactive</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- EXPERIENCE / TIMELINE SECTION -->
+    <section id="experience" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="section-header max-w-2xl mb-16">
+        <div class="flex items-center gap-2 text-brand-cyan font-mono text-xs uppercase tracking-widest mb-3">
+          <span class="w-5 h-[1px] bg-brand-cyan"></span>
+          <span>Trajectory</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          経歴 & 開発の歩み
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          基礎から応用、そしてモダンスタックやクリエイティブWebへの深化のプロセス。
+        </p>
+      </div>
+
+      <div id="timeline-container" class="relative pl-6 md:pl-10 border-l border-slate-800 space-y-12 reveal-group">
+        
+        <!-- Animated glowing indicator track -->
+        <div id="timeline-progress" class="absolute left-[-1px] top-0 w-[2px] bg-gradient-to-b from-brand-cyan via-brand-ice to-brand-blue h-0"></div>
+
+        <!-- Timeline Item 1 -->
+        <div class="relative reveal-item">
+          <div class="absolute -left-[31px] md:-left-[47px] top-1 timeline-dot"></div>
+          <div class="glass-panel p-6 md:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan font-mono text-xs font-semibold">
+                Present
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Modern Frontend & Web App</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold text-white mb-2">
+              モダンWeb技術・アプリケーション開発への深化
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+              React / Next.js、TypeScriptによるWebアプリケーションの設計・開発、状態管理やパフォーマンス最適化、Three.jsを活用したリッチな3Dインタラクションの実装に注力。
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-300">
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">React</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Next.js</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">TypeScript</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Three.js</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Item 2 -->
+        <div class="relative reveal-item">
+          <div class="absolute -left-[31px] md:-left-[47px] top-1 timeline-dot"></div>
+          <div class="glass-panel p-6 md:p-8 border-cyan-500/30">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 font-mono text-xs font-semibold">
+                Development & Practice
+              </span>
+              <span class="text-xs text-brand-ice font-mono">Web Development & Client Projects</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold text-white mb-2">
+              Webサイト制作・フロントエンド実装の実務と実践
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+              コーポレートサイト、ランディングページ等の制作を担当。デザインカンプの忠実な再現、レスポンシブ対応、JavaScriptによるアニメーション実装、納期管理と品質向上を徹底。
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-300">
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">HTML5/CSS3</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">JavaScript (ES6+)</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Tailwind CSS</span>
+              <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Responsive UI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Item 3 -->
+        <div class="relative reveal-item">
+          <div class="absolute -left-[31px] md:-left-[47px] top-1 timeline-dot"></div>
+          <div class="glass-panel p-6 md:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 font-mono text-xs">
+                Start
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Foundation</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold text-white mb-2">
+              プログラミングとWeb技術の探究開始
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              コンピュータサイエンスやプログラミングの基礎を学び、ブラウザ上で動くUIやWebフロントエンド技術の魅力に没頭して開発をスタート。
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- SKILLS SECTION -->
+    <section id="skills" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="section-header max-w-2xl mb-16">
+        <div class="flex items-center gap-2 text-brand-cyan font-mono text-xs uppercase tracking-widest mb-3">
+          <span class="w-5 h-[1px] bg-brand-cyan"></span>
+          <span>Technical Stack</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          技術スタック & スキルセット
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          基礎的なWeb標準の理解から、モダンなフレームワーク、そして3Dグラフィクスまで幅広く対応可能です。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-group">
+        
+        <!-- Skill Group 1: Core Languages -->
+        <div class="glass-panel p-6 reveal-item">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-cyan-950/60 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan">
+              <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-white text-base">Core Languages</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">TypeScript</span>
+                <span class="text-brand-cyan">Advanced</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-cyan w-[88%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">JavaScript (ES6+)</span>
+                <span class="text-brand-cyan">Expert</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-cyan w-[92%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">HTML5 / CSS3</span>
+                <span class="text-brand-cyan">Expert</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-cyan w-[95%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill Group 2: Frameworks -->
+        <div class="glass-panel p-6 reveal-item">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-blue-950/60 border border-brand-blue/40 flex items-center justify-center text-brand-ice">
+              <i data-lucide="box" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-white text-base">Frameworks</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">React</span>
+                <span class="text-brand-ice">Advanced</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-ice w-[85%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Next.js (App Router)</span>
+                <span class="text-brand-ice">Proficient</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-ice w-[82%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Tailwind CSS</span>
+                <span class="text-brand-ice">Expert</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-ice w-[92%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill Group 3: 3D & Animation -->
+        <div class="glass-panel p-6 reveal-item">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-indigo-950/60 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+              <i data-lucide="compass" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-white text-base">Creative & 3D</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Three.js / WebGL</span>
+                <span class="text-indigo-400">Intermediate</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-400 w-[78%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">GSAP / ScrollTrigger</span>
+                <span class="text-indigo-400">Advanced</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-400 w-[84%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">CSS Animations</span>
+                <span class="text-indigo-400">Expert</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-400 w-[90%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skill Group 4: Workflow & Tools -->
+        <div class="glass-panel p-6 reveal-item">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300">
+              <i data-lucide="terminal" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-white text-base">Tools & Workflow</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Git / GitHub</span>
+                <span class="text-slate-400">Proficient</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-400 w-[85%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Figma to Code</span>
+                <span class="text-slate-400">Expert</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-400 w-[92%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1">
+                <span class="text-slate-200">Vercel / Vite</span>
+                <span class="text-slate-400">Proficient</span>
+              </div>
+              <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-slate-400 w-[88%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- WORKS / SHOWCASE SECTION -->
+    <section id="works" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="section-header max-w-2xl mb-16">
+        <div class="flex items-center gap-2 text-brand-cyan font-mono text-xs uppercase tracking-widest mb-3">
+          <span class="w-5 h-[1px] bg-brand-cyan"></span>
+          <span>Featured Works</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+          制作実績 & プロジェクト
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          モダンスタックによるWebアプリケーションや、インタラクティブ3D表現、Webサイトの制作実績。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal-group">
+
+        <!-- Work 1: 3D Interactive Portfolio -->
+        <div class="glass-panel overflow-hidden tilt-card relative flex flex-col reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          
+          <!-- Mock Graphic Preview -->
+          <div class="h-48 bg-gradient-to-br from-slate-900 via-cyan-950/30 to-brand-black p-6 flex flex-col justify-between relative overflow-hidden border-b border-slate-800/80">
+            <div class="flex justify-between items-center z-10">
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40">Three.js / WebGL</span>
+              <span class="text-slate-500 font-mono text-xs">2024</span>
+            </div>
+            <!-- Geometric Decorative Shapes -->
+            <div class="absolute -right-4 -bottom-4 w-32 h-32 rounded-full border border-brand-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <div class="w-20 h-20 rounded-full border border-dashed border-brand-ice/40 animate-[spin_20s_linear_infinite]"></div>
+            </div>
+            <div class="z-10">
+              <h4 class="font-mono text-sm text-slate-300">EXPERIENCE DESIGN</h4>
+              <p class="font-bold text-white text-lg">3D Interactive Creative Lab</p>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                Three.jsとGSAPを融合したインタラクティブWeb体験。マウスパララックス、パーティクルシステム、スクロール連動カメラワークを実装。
+              </p>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-slate-300 mb-6">
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Three.js</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">GSAP</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Tailwind</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+              <span class="text-xs text-brand-cyan font-mono flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                View Project <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </span>
+              <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-brand-cyan transition-colors"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work 2: Corporate Site -->
+        <div class="glass-panel overflow-hidden tilt-card relative flex flex-col reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          
+          <div class="h-48 bg-gradient-to-br from-slate-900 via-blue-950/30 to-brand-black p-6 flex flex-col justify-between relative overflow-hidden border-b border-slate-800/80">
+            <div class="flex justify-between items-center z-10">
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/40">Web Production</span>
+              <span class="text-slate-500 font-mono text-xs">2023</span>
+            </div>
+            <div class="absolute right-3 bottom-3 opacity-20 group-hover:opacity-40 transition-opacity">
+              <i data-lucide="layout" class="w-24 h-24 text-blue-400"></i>
+            </div>
+            <div class="z-10">
+              <h4 class="font-mono text-sm text-slate-300">CORPORATE WEB</h4>
+              <p class="font-bold text-white text-lg">コーポレートサイト制作</p>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                Figmaからの精密コーディング、レスポンシブ完全対応、表示速度最適化（PageSpeed Insights 90+）を達成したWebサイト。
+              </p>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-slate-300 mb-6">
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">JavaScript</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Tailwind CSS</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">SEO / Speed</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+              <span class="text-xs text-blue-400 font-mono flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                View Project <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </span>
+              <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-blue-400 transition-colors"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work 3: Modern Next.js Web App -->
+        <div class="glass-panel overflow-hidden tilt-card relative flex flex-col reveal-item group">
+          <div class="card-glare absolute inset-0 pointer-events-none transition-opacity duration-300"></div>
+          
+          <div class="h-48 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-brand-black p-6 flex flex-col justify-between relative overflow-hidden border-b border-slate-800/80">
+            <div class="flex justify-between items-center z-10">
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">Full Stack App</span>
+              <span class="text-slate-500 font-mono text-xs">2024</span>
+            </div>
+            <div class="absolute right-3 bottom-3 opacity-20 group-hover:opacity-40 transition-opacity">
+              <i data-lucide="cpu" class="w-24 h-24 text-indigo-400"></i>
+            </div>
+            <div class="z-10">
+              <h4 class="font-mono text-sm text-slate-300">WEB APPLICATION</h4>
+              <p class="font-bold text-white text-lg">Next.js & TS Dashboard</p>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                Next.js App RouterとTypeScriptを採用したデータ可視化ダッシュボード。サーバーコンポーネントによる高速レンダリングと型安全なデータフェッチを追求。
+              </p>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-slate-300 mb-6">
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Next.js 14</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">TypeScript</span>
+                <span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">Tailwind CSS</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+              <span class="text-xs text-indigo-400 font-mono flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                View Project <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </span>
+              <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+      <div class="glass-panel p-8 sm:p-12 relative overflow-hidden border-cyan-500/30">
+        
+        <!-- Glow accents -->
+        <div class="absolute top-0 right-0 w-80 h-80 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-brand-blue/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
+          
+          <div class="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-brand-cyan font-mono text-xs uppercase tracking-widest mb-3">
+                <span class="w-5 h-[1px] bg-brand-cyan"></span>
+                <span>Get in Touch</span>
+              </div>
+              <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+                お問い合わせ
+              </h2>
+              <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
+                プロジェクトのご相談、面談、その他お問い合わせはお気軽に下記フォームまたはSNS・メールよりご連絡ください。
+              </p>
+            </div>
+
+            <!-- Contact Information Cards -->
+            <div class="space-y-4">
+              <div class="flex items-center gap-3 text-slate-300">
+                <div class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-cyan">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[11px] text-slate-500 font-mono">EMAIL</span>
+                  <span class="text-sm font-mono text-slate-200">your.email@example.com</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 text-slate-300">
+                <div class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-cyan">
+                  <i data-lucide="map-pin" class="w-4 h-4"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[11px] text-slate-500 font-mono">LOCATION</span>
+                  <span class="text-sm text-slate-200">Tokyo, Japan</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 text-slate-300">
+                <div class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-brand-cyan">
+                  <i data-lucide="github" class="w-4 h-4"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[11px] text-slate-500 font-mono">GITHUB</span>
+                  <a href="#" class="text-sm font-mono text-brand-ice hover:underline">github.com/your-username</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="lg:col-span-7">
+            <form id="contact-form" class="space-y-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-xs font-mono text-slate-300 mb-2">お名前 / 貴社名</label>
+                  <input type="text" required placeholder="お名前" class="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 focus:border-brand-cyan focus:outline-none text-sm text-slate-200 placeholder-slate-600 transition-colors">
+                </div>
+                <div>
+                  <label class="block text-xs font-mono text-slate-300 mb-2">メールアドレス</label>
+                  <input type="email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 focus:border-brand-cyan focus:outline-none text-sm text-slate-200 placeholder-slate-600 transition-colors">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-300 mb-2">件名</label>
+                <input type="text" required placeholder="件名をご入力ください" class="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 focus:border-brand-cyan focus:outline-none text-sm text-slate-200 placeholder-slate-600 transition-colors">
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-slate-300 mb-2">メッセージ本文</label>
+                <textarea rows="4" required placeholder="内容をご入力ください..." class="w-full px-4 py-3 rounded-xl bg-slate-950/70 border border-slate-800 focus:border-brand-cyan focus:outline-none text-sm text-slate-200 placeholder-slate-600 transition-colors resize-none"></textarea>
+              </div>
+
+              <div class="flex items-center justify-between pt-2">
+                <button type="submit" class="cyber-button w-full sm:w-auto">
+                  <span>メッセージを送信</span>
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <div id="form-success" class="hidden p-4 rounded-xl bg-cyan-950/40 border border-brand-cyan/50 text-brand-cyan text-sm flex items-center gap-3">
+                <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+                <span>メッセージを送信しました。折り返しご連絡いたします！</span>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 border-t border-slate-900 bg-brand-black/90 py-10 px-6 lg:px-16 text-center">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-brand-cyan"></span>
+        <span class="font-mono text-xs text-slate-400">© 2026 Portfolio. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-6 font-mono text-xs text-slate-500">
+        <a href="#hero" class="hover:text-brand-cyan transition-colors">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/three-scene.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
